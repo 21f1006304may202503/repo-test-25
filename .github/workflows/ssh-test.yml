@@ -40,8 +40,6 @@ jobs:
           touch report.md
           echo "Result" >> report.md
           echo "\`\`\`" >> report.md
-          cat test_output.txt >> report.md
-          echo "\`\`\`" >> report.md
           echo "metrics from training" >> report.md
           cat metrics.csv >> report.md
           echo "\`\`\`" >> report.md
