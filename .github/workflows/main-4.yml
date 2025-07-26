@@ -11,9 +11,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Set up gcloud CLI
-      uses: google-github-actions/auth@v2
-
     - name: Install Google Cloud SDK
       uses: google-github-actions/setup-gcloud@v2
       with:
