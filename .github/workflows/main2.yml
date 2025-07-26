@@ -24,8 +24,10 @@ jobs:
 
     - name: setup ssh key
       run: |
+        \rm key.pem
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > key.pem
         chmod 600 key.pem
+        cat key.pem
 
     - name : ssh into vm
       run: |
