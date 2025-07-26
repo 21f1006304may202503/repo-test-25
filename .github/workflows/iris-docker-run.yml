@@ -30,7 +30,7 @@ jobs:
       - name: run unit tests
         run: |
           ssh -i key.pem -o StrictHostKeyChecking=no usr_21f1006304may202503_gmail_co@34.56.206.44 << 'EOF'
-          cd /home/usr_21f1006304may202503_gmail_co/prj-test-25
+          cd /home/usr_21f1006304may202503_gmail_co/repo-test-25
           pip install -r requirements.txt
           python train/train.py
           pytest test/test.py -v 2>&1 > test_output.txt
