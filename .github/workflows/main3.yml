@@ -1,4 +1,4 @@
-name: Run Command on GCP VM
+name: Run Command on GCP VM - for - g21f1006304may202503
 
 on:
   workflow_dispatch:  # or push, or any trigger
