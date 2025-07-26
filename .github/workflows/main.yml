@@ -1,0 +1,51 @@
+name: Generate SSH Key & Connect to GCP VM
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ssh-job:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Generate SSH Key Pair
+      id: generate_key
+      run: |
+        ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N "" -C "github-actions"
+        cat ~/.ssh/id_rsa
+        echo "-----END PRIVATE KEY-----" >> ~/.ssh/id_rsa  # ensure clean end
+        echo "::set-output name=private_key::$(cat ~/.ssh/id_rsa)"
+        echo "::set-output name=public_key::$(cat ~/.ssh/id_rsa.pub)"
+      shell: bash
+
+    - name: Save private key to file
+      run: |
+        echo "${{ steps.generate_key.outputs.private_key }}" > key.pem
+        chmod 600 key.pem
+
+    - name: Authenticate with GCP
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+    - name: Install gcloud
+      uses: google-github-actions/setup-gcloud@v2
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        install_components: 'beta'
+
+    - name: Add SSH Public Key to GCP VM Metadata
+      run: |
+        gcloud compute instances add-metadata ${{ secrets.GCP_VM_NAME }} \
+          --zone=${{ secrets.GCP_VM_ZONE }} \
+          --metadata="ssh-keys=${{ secrets.SSH_USERNAME }}:${{ steps.generate_key.outputs.public_key }}"
+
+    - name: Wait a few seconds for metadata to apply
+      run: sleep 10
+
+    - name: SSH into GCP VM and run command
+      run: |
+        ssh -i key.pem -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.GCP_VM_IP }} "echo Hello from GitHub && uptime"
