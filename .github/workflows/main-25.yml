@@ -30,4 +30,5 @@ jobs:
 
     - name : ssh into vm
       run: |
-        ssh -i key.pem -o StrictHostKeyChecking=no usr_21f1006304may202503_gmail_co@34.56.206.44 'cat x'
+        ssh -i key.pem -o StrictHostKeyChecking=no usr_21f1006304may202503_gmail_co@34.56.206.44 'cat x; touch /tmp/raj29'
+        touch /tmp/raj30
